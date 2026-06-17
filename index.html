@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NYX • آرشیو هنتای و پورن NSFW</title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+
+    * {
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    body {
+      background: #0f0f0f;
+      color: #f1f1f1;
+    }
+
+    /* ===== Pinterest-style Masonry ===== */
+    .masonry {
+      column-count: 4;
+      column-gap: 16px;
+    }
+
+    .masonry .pin {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .masonry .pin:hover {
+      transform: translateY(-4px);
+      border-color: #a855f7;
+      box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2);
+    }
+
+    .masonry .pin img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .masonry .pin:hover img {
+      transform: scale(1.02);
+    }
+
+    .pin-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+      padding: 20px 16px 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .pin:hover .pin-overlay {
+      opacity: 1;
+    }
+
+    /* ===== Glass Nav ===== */
+    .glass {
+      background: rgba(15, 15, 15, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* ===== Tags Cloud ===== */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px;
+      background: #161616;
+      border-radius: 20px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .tag-item {
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: #222;
+      border: 1px solid #333;
+      color: #aaa;
+      font-size: 13px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .tag-item:hover,
+    .tag-item.active {
+      background: #a855f7;
+      color: white;
+      border-color: #a855f7;
+    }
+
+    /* ===== Modal ===== */
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    /* ===== Scroll ===== */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a855f7;
+      border-radius: 12px;
+    }
+
+    /* ===== Buttons ===== */
+    .source-btn {
+      background: transparent;
+      color: #888;
+      border: 1px solid #333;
+      transition: 0.2s;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+    }
+
+    .source-btn.active {
+      background: #a855f7;
+      color: white;
+      border-color: #a855f7;
+    }
+
+    .source-btn:hover:not(.active) {
+      border-color: #666;
+      color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="fixed top-0 w-full z-50 glass px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🌙</span>
+      <span class="text-2xl font-bold text-fuchsia-400">NYX</span>
+    </div>
+
+    <div class="flex-1 max-w-xl mx-4 order-last md:order-none w-full md:w-auto">
+      <div class="relative">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+        <input id="search-input" type="text" placeholder="جستجو: milf, ahegao, maid, big breasts ..."
+        class="w-full bg-zinc-900 border border-zinc-700 rounded-full py-2.5 pr-5 pl-12 text-sm focus:outline-none focus:border-fuchsia-500 transition" />
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button onclick="switchSource('waifu')" class="source-btn active">Waifu</button>
+      <button onclick="switchSource('nekos')" class="source-btn">Nekos</button>
+      <button onclick="switchSource('eporner')" class="source-btn">Eporner</button>
+    </div>
+  </nav>
+
+  <!-- ===== MAIN ===== -->
+  <div class="pt-24 max-w-screen-2xl mx-auto px-6">
+
+    <!-- ===== HERO ===== -->
+    <section class="bg-gradient-to-br from-fuchsia-950/40 to-black rounded-4xl p-10 text-center mb-10 border border-fuchsia-900/30">
+      <h1 class="text-5xl font-extrabold">آرشیو <span class="text-fuchsia-400">هنتای</span> و پورن</h1>
+      <p class="text-zinc-400 mt-3">APIهای قدرتمند • جستجوی زنده • عکس + ویدیو</p>
+    </section>
+
+    <!-- ===== TABS ===== -->
+    <div class="flex gap-6 border-b border-zinc-800 pb-3 mb-6 text-sm">
+      <button onclick="showSection('images')" class="tab-btn active flex items-center gap-2 text-white border-b-2 border-fuchsia-500 pb-3"><i class="fa-regular fa-image"></i> تصاویر</button>
+      <button onclick="showSection('videos')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-circle-play"></i> ویدیوها</button>
+      <button onclick="showSection('favorites')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-heart"></i> علاقه‌مندی‌ها</button>
+      <button onclick="showSection('tags')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-tags"></i> تگ‌ها</button>
+    </div>
+
+    <!-- ===== IMAGES (Pinterest Masonry) ===== -->
+    <section id="images-section">
+      <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+        <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fa-regular fa-image text-fuchsia-400"></i> گالری</h2>
+        <button onclick="loadNewBatch()" class="bg-fuchsia-600 hover:bg-fuchsia-500 transition px-6 py-2.5 rounded-full text-sm"><i class="fa-regular fa-rotate-right ml-2"></i> جدید</button>
+      </div>
+      <div id="image-gallery" class="masonry"></div>
+      <div class="text-center mt-10">
+        <button onclick="loadMore()" class="px-8 py-3 bg-white text-black rounded-full font-bold text-sm hover:bg-zinc-200 transition"><i class="fa-regular fa-arrow-down ml-2"></i> بیشتر</button>
+      </div>
+    </section>
+
+    <!-- ===== VIDEOS ===== -->
+    <section id="videos-section" class="hidden">
+      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-circle-play text-fuchsia-400 ml-2"></i> ویدیوها</h2>
+      <div id="video-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- ===== FAVORITES ===== -->
+    <section id="favorites-section" class="hidden">
+      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-heart text-fuchsia-400 ml-2"></i> علاقه‌مندی‌ها</h2>
+      <div id="fav-gallery" class="masonry"></div>
+    </section>
+
+    <!-- ===== TAGS ===== -->
+    <section id="tags-section" class="hidden">
+      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-tags text-fuchsia-400 ml-2"></i> تگ‌های محبوب</h2>
+      <div class="tag-cloud" id="tag-cloud"></div>
+      <p class="text-zinc-500 text-sm mt-4">👆 روی هر تگ کلیک کنید تا محتوای مرتبط رو ببینید</p>
+    </section>
+
+  </div>
+
+  <!-- ===== MODAL ===== -->
+  <div id="modal" class="hidden fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
+    <div class="max-w-5xl w-full relative bg-zinc-900 rounded-3xl overflow-hidden">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-3xl text-white/70 hover:text-white z-10"><i class="fa-regular fa-circle-xmark"></i></button>
+      <div id="modal-content" class="p-6"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== STATE =====
+    let currentSource = 'waifu';
+    let allItems = [];
+    let currentPage = 1;
+    let favorites = JSON.parse(localStorage.getItem('nyxFavs') || '[]');
+    let currentTag = '';
+
+    // ===== ALL TAGS =====
+    const ALL_TAGS = [
+      'milf', 'ahegao', 'maid', 'big breasts', 'hentai', 'anime',
+      'waifu', 'neko', 'ecchi', 'suggestive', 'explicit', 'schoolgirl',
+      'nurse', 'bunny girl', 'cat girl', 'fox girl', 'demon girl',
+      'angel', 'succubus', 'vampire', 'elf', 'orc', 'tentacle',
+      'bondage', 'bdsm', 'yuri', 'yaoi', 'furry', 'scat', 'gore'
+    ];
+
+    // ===== API FUNCTIONS =====
+    async function fetchWaifu(tags = '') {
+      let url = `https://api.waifu.im/images?IsNsfw=true&PageSize=20`;
+      if (tags) url += `&IncludedTags=${encodeURIComponent(tags)}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.items || [];
+      } catch { return []; }
+    }
+
+    async function fetchNekos() {
+      try {
+        const res = await fetch(`https://api.nekosapi.com/v4/images/random?rating=explicit,suggestive&limit=20`);
+        const data = await res.json();
+        return data.filter(i => ['explicit', 'suggestive'].includes(i.rating));
+      } catch { return []; }
+    }
+
+    async function fetchEporner(query = '') {
+      const q = query || 'hentai';
+      const url = `https://www.eporner.com/api/v2/video/search/?q=${encodeURIComponent(q)}&per_page=12`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.videos || [];
+      } catch { return []; }
+    }
+
+    // ===== RENDER PINTEREST PIN =====
+    function createPin(item) {
+      const pin = document.createElement('div');
+      pin.className = 'pin';
+
+      const url = item.url || item.image_url || item.preview;
+      const tags = item.tags ? item.tags.map(t => t.name || t).join(' • ') : 'NSFW';
+      const width = item.width || 400;
+      const height = item.height || 400;
+
+      pin.innerHTML = `
+          <img src="${url}" loading="lazy" style="aspect-ratio: ${width}/${height}" />
+          <div class="pin-overlay">
+            <div class="flex justify-between items-end">
+              <div class="text-xs text-zinc-300">
+                <span class="bg-black/50 px-2 py-1 rounded-full">${tags}</span>
+                <span class="block mt-1 text-zinc-400 text-[10px]">${width}×${height}</span>
+              </div>
+              <button onclick="event.stopPropagation(); toggleFavorite('${url}')" class="bg-white/20 hover:bg-white/30 backdrop-blur p-2 rounded-full text-lg">
+                <i class="fa-regular fa-heart ${favorites.includes(url) ? 'fa-solid text-fuchsia-400' : ''}"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+      pin.onclick = () => showModal(item);
+      return pin;
+    }
+
+    // ===== RENDER VIDEO CARD =====
+    function createVideoCard(video) {
+      const card = document.createElement('div');
+      card.className = 'pin';
+      const thumb = video.preview || video.thumb || 'https://picsum.photos/400/300';
+      card.innerHTML = `
+          <img src="${thumb}" loading="lazy" class="aspect-video" />
+          <div class="p-4">
+            <p class="font-medium text-sm line-clamp-2">${video.title || 'ویدیو بدون عنوان'}</p>
+            <div class="flex justify-between mt-2 text-xs text-zinc-500">
+              <span>⏱ ${video.duration || '??'}</span>
+              <span>👁 ${video.views || '0'}</span>
+            </div>
+          </div>
+        `;
+      card.onclick = () => showVideoModal(video);
+      return card;
+    }
+
+    // ===== LOAD CONTENT =====
+    async function loadContent(append = false) {
+      const container = document.getElementById('image-gallery');
+      if (!append) container.innerHTML = '';
+
+      const query = document.getElementById('search-input').value.trim();
+      const searchTerm = currentTag || query;
+
+      let items = [];
+
+      if (currentSource === 'eporner') {
+        const videos = await fetchEporner(searchTerm);
+        videos.forEach(v => container.appendChild(createVideoCard(v)));
+        return;
+      } else if (currentSource === 'waifu') {
+        items = await fetchWaifu(searchTerm);
+      } else if (currentSource === 'nekos') {
+        items = await fetchNekos();
+      }
+
+      // fallback
+      if (items.length === 0 && searchTerm.length > 1) {
+        if (currentSource === 'waifu') items = await fetchWaifu('');
+        else if (currentSource === 'nekos') items = await fetchNekos();
+      }
+
+      allItems = append ? [...allItems, ...items] : items;
+      items.forEach(item => container.appendChild(createPin(item)));
+    }
+
+    // ===== LOAD MORE =====
+    function loadMore() {
+      currentPage++;
+      loadContent(true);
+    }
+
+    function loadNewBatch() {
+      currentPage = 1;
+      currentTag = '';
+      document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+      document.getElementById('search-input').value = '';
+      loadContent(false);
+    }
+
+    // ===== MODAL WITH DETAILS =====
+    function showModal(item) {
+      const url = item.url || item.image_url;
+      const tags = item.tags ? item.tags.map(t => t.name || t).join(' • ') : 'بدون تگ';
+      const width = item.width || 'نامشخص';
+      const height = item.height || 'نامشخص';
+      const source = item.source || currentSource;
+
+      document.getElementById('modal-content').innerHTML = `
+          <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex-1">
+              <img src="${url}" class="w-full max-h-[70vh] object-contain rounded-2xl" />
+            </div>
+            <div class="md:w-80 space-y-4">
+              <h3 class="text-xl font-bold">جزئیات</h3>
+              <div class="space-y-2 text-sm">
+                <p><span class="text-zinc-400">ابعاد:</span> ${width} × ${height}</p>
+                <p><span class="text-zinc-400">منبع:</span> ${source}</p>
+                <p><span class="text-zinc-400">تگ‌ها:</span></p>
+                <div class="flex flex-wrap gap-1">
+                  ${tags.split(' • ').map(t => `<span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">${t}</span>`).join('')}
+                </div>
+                <button onclick="toggleFavorite('${url}')" class="w-full mt-4 bg-fuchsia-600 hover:bg-fuchsia-500 py-3 rounded-full text-sm">
+                  <i class="fa-regular fa-heart ${favorites.includes(url) ? 'fa-solid' : ''} ml-2"></i>
+                  ${favorites.includes(url) ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    // ===== VIDEO MODAL =====
+    function showVideoModal(video) {
+      const src = video.url || video.link || '#';
+      document.getElementById('modal-content').innerHTML = `
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold">${video.title || 'ویدیو'}</h3>
+            <video controls autoplay class="w-full max-h-[75vh] rounded-2xl">
+              <source src="${src}" type="video/mp4" />
+            </video>
+            <div class="flex gap-4 text-sm text-zinc-400">
+              <span>⏱ ${video.duration || '??'}</span>
+              <span>👁 ${video.views || '0'}</span>
+              <span>👍 ${video.likes || '0'}</span>
+            </div>
+          </div>
+        `;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    // ===== FAVORITES =====
+    function toggleFavorite(url) {
+      const idx = favorites.indexOf(url);
+      if (idx > -1) favorites.splice(idx, 1);
+      else favorites.push(url);
+      localStorage.setItem('nyxFavs', JSON.stringify(favorites));
+      loadFavorites();
+    }
+
+    function loadFavorites() {
+      const container = document.getElementById('fav-gallery');
+      container.innerHTML = '';
+      favorites.forEach(url => {
+        const div = document.createElement('div');
+        div.className = 'pin';
+        div.innerHTML = `<img src="${url}" class="w-full" />`;
+        div.onclick = () => {
+          document.getElementById('modal-content').innerHTML =
+            `<img src="${url}" class="max-h-[80vh] mx-auto rounded-2xl" />`;
+          document.getElementById('modal').classList.remove('hidden');
+        };
+        container.appendChild(div);
+      });
+    }
+
+    // ===== TAGS =====
+    function loadTags() {
+      const container = document.getElementById('tag-cloud');
+      container.innerHTML = '';
+      ALL_TAGS.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'tag-item';
+        span.textContent = tag;
+        span.onclick = () => {
+          document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+          span.classList.add('active');
+          currentTag = tag;
+          document.getElementById('search-input').value = tag;
+          loadContent(false);
+          showSection('images');
+        };
+        container.appendChild(span);
+      });
+    }
+
+    // ===== SWITCH SOURCE =====
+    function switchSource(src) {
+      currentSource = src;
+      document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      currentTag = '';
+      document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+      loadContent(false);
+    }
+
+    // ===== SHOW SECTION =====
+    function showSection(sec) {
+      document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(sec + '-section').classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active', 'text-white', 'border-b-2', 'border-fuchsia-500');
+        b.classList.add('text-zinc-400');
+      });
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        if (b.textContent.includes(sec === 'images' ? 'تصاویر' : sec === 'videos' ? 'ویدیوها' : sec === 'favorites' ?
+            'علاقه' : 'تگ')) {
+          b.classList.add('active', 'text-white', 'border-b-2', 'border-fuchsia-500');
+          b.classList.remove('text-zinc-400');
+        }
+      });
+      if (sec === 'images') loadContent(false);
+      else if (sec === 'favorites') loadFavorites();
+      else if (sec === 'tags') loadTags();
+    }
+
+    // ===== SEARCH =====
+    let searchTimeout;
+    document.getElementById('search-input').addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentTag = '';
+        document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+        currentPage = 1;
+        loadContent(false);
+      }, 400);
+    });
+
+    // ===== CLOSE MODAL =====
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    // ===== INIT =====
+    window.onload = () => {
+      loadContent(false);
+      loadFavorites();
+      loadTags();
+    };
+  </script>
+
+</body>
+</html>
