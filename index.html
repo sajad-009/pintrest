@@ -1,522 +1,835 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl" class="scroll-smooth">
+<!doctype html>
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NYX • آرشیو هنتای و پورن NSFW</title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
+  <title>Pintrest 😉</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap");
 
-    * {
-      font-family: 'Vazirmatn', sans-serif;
+    :root {
+      --bg: #030305;
+      --surface: #0e0e14;
+      --surface2: #16161f;
+      --border: rgba(255,255,255,.07);
+      --accent: #7c3aed;
+      --accent2: #f43f5e;
+      --text: #f4f4f5;
+      --muted: #71717a;
     }
 
+    * { font-family: "Vazirmatn", sans-serif; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      background: #0f0f0f;
-      color: #f1f1f1;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* ===== Pinterest-style Masonry ===== */
+    /* ambient */
+    .ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(600px circle at 15% 10%, rgba(124,58,237,.12), transparent),
+        radial-gradient(500px circle at 85% 20%, rgba(244,63,94,.08), transparent),
+        radial-gradient(700px circle at 50% 100%, rgba(59,130,246,.05), transparent);
+    }
+    .grid-bg {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .35;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+    }
+
+    /* layout */
+    .shell { position: relative; z-index: 1; display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      position: fixed; top: 0; right: 0; bottom: 0;
+      background: rgba(14,14,20,.85);
+      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
+      border-left: 1px solid var(--border);
+      padding: 28px 20px;
+      display: flex; flex-direction: column;
+      z-index: 50;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 36px; padding: 0 8px;
+    }
+    .logo-icon {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: grid; place-items: center; font-size: 20px;
+      box-shadow: 0 8px 32px rgba(124,58,237,.35);
+    }
+    .logo h1 {
+      margin: 0; font-size: 1.5rem; font-weight: 900;
+      background: linear-gradient(135deg, #c4b5fd, #fda4af);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo p { margin: 0; font-size: .65rem; color: var(--muted); }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: 14px;
+      color: var(--muted); font-weight: 600; font-size: .9rem;
+      cursor: pointer; transition: .2s; border: 1px solid transparent;
+      margin-bottom: 6px; background: none; width: 100%; text-align: right;
+    }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .nav-item.active {
+      color: #fff; background: rgba(124,58,237,.15);
+      border-color: rgba(124,58,237,.3);
+    }
+    .nav-item .badge {
+      margin-right: auto; background: var(--accent);
+      color: #fff; font-size: .7rem; padding: 2px 8px; border-radius: 99px;
+    }
+
+    .nsfw-box {
+      margin-top: auto; padding: 16px; border-radius: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .nsfw-box label { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .nsfw-box span { font-size: .8rem; font-weight: 600; color: var(--muted); }
+    .toggle { position: relative; width: 48px; height: 26px; }
+    .toggle input { display: none; }
+    .toggle .track {
+      position: absolute; inset: 0; border-radius: 99px;
+      background: #27272a; border: 1px solid #3f3f46; transition: .3s;
+    }
+    .toggle .track::after {
+      content: ""; position: absolute; width: 18px; height: 18px;
+      border-radius: 50%; background: #a1a1aa; top: 3px; right: 3px; transition: .3s;
+    }
+    .toggle input:checked + .track {
+      background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent;
+    }
+    .toggle input:checked + .track::after { transform: translateX(-22px); background: #fff; }
+
+    .main { flex: 1; margin-right: 240px; padding: 32px 36px 80px; }
+
+    /* mobile nav */
+    .mobile-nav {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(14,14,20,.92);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border); z-index: 50;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    }
+    .mobile-nav .nav-item { flex: 1; flex-direction: column; gap: 4px; padding: 10px 4px; font-size: .7rem; margin: 0; }
+    .mobile-nav .nav-item i { font-size: 1.1rem; }
+
+    /* page header */
+    .page-head { margin-bottom: 32px; }
+    .page-head h2 { font-size: 1.75rem; font-weight: 800; margin: 0 0 6px; }
+    .page-head p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    /* sections */
+    .section { display: none; animation: fadeUp .4s ease; }
+    .section.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    /* ── IMAGES (masonry — same logic/style) ── */
     .masonry {
+      -webkit-column-count: 4;
       column-count: 4;
+      -webkit-column-gap: 16px;
       column-gap: 16px;
     }
+    @media (max-width: 1200px) { .masonry { -webkit-column-count: 3; column-count: 3; } }
+    @media (max-width: 900px) { .masonry { -webkit-column-count: 2; column-count: 2; } }
+    @media (max-width: 640px) { .masonry { -webkit-column-count: 1; column-count: 1; } }
 
     .masonry .pin {
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
       break-inside: avoid;
       margin-bottom: 16px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
+      border-radius: 20px; overflow: hidden;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      transition: all .3s ease; cursor: pointer; position: relative;
     }
-
     .masonry .pin:hover {
-      transform: translateY(-4px);
-      border-color: #a855f7;
-      box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2);
+      transform: translateY(-4px); border-color: #a855f7;
+      box-shadow: 0 12px 40px rgba(168,85,247,.2);
     }
-
-    .masonry .pin img {
-      width: 100%;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-
-    .masonry .pin:hover img {
-      transform: scale(1.02);
-    }
-
     .pin-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-      padding: 20px 16px 16px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,.85));
+      padding: 20px 16px 16px; opacity: 0; transition: opacity .3s;
+    }
+    .pin:hover .pin-overlay { opacity: 1; }
+
+    /* ── VIDEOS ── */
+    .video-toolbar {
+      display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px;
+      padding: 20px; border-radius: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+    }
+    .search-field {
+      flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 0 16px;
+      transition: .2s;
+    }
+    .search-field:focus-within { border-color: rgba(124,58,237,.5); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+    .search-field input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); padding: 14px 0; font-size: .9rem;
+    }
+    .btn {
+      padding: 12px 24px; border-radius: 14px; font-weight: 700; font-size: .85rem;
+      cursor: pointer; transition: .2s; border: none; color: #fff;
+    }
+    .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+    .btn-accent:hover { box-shadow: 0 8px 28px rgba(124,58,237,.4); transform: translateY(-1px); }
+    .btn-ghost { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,.15); }
+    .btn-ghost.on { background: rgba(124,58,237,.2); color: #c4b5fd; border-color: rgba(124,58,237,.4); }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .v-card {
+      border-radius: 18px; overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      cursor: pointer; transition: .35s cubic-bezier(.34,1.4,.64,1);
+    }
+    .v-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124,58,237,.4);
+      box-shadow: 0 20px 50px rgba(0,0,0,.5), 0 0 30px rgba(124,58,237,.1);
+    }
+    .v-thumb { position: relative; overflow: hidden; }
+    .v-thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; transition: transform .5s; }
+    .v-card:hover .v-thumb img { transform: scale(1.06); }
+    .v-thumb .overlay {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: rgba(0,0,0,.4); opacity: 0; transition: .3s;
+    }
+    .v-card:hover .v-thumb .overlay { opacity: 1; }
+    .v-thumb .play {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: grid; place-items: center; font-size: 1rem;
+      box-shadow: 0 8px 24px rgba(124,58,237,.5);
+    }
+    .v-thumb .dur {
+      position: absolute; bottom: 8px; right: 8px;
+      background: rgba(0,0,0,.75);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      padding: 3px 8px; border-radius: 6px; font-size: .7rem; font-weight: 700;
+    }
+    .v-body { padding: 14px 16px 16px; }
+    .v-body h3 {
+      margin: 0 0 8px; font-size: .85rem; font-weight: 600; line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .v-meta { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); }
+
+    /* ── FAVORITES ── */
+    .fav-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 22px; border-radius: 18px; margin-bottom: 24px;
+      background: var(--surface); border: 1px solid var(--border);
+    }
+    .fav-empty {
+      text-align: center; padding: 80px 20px; color: var(--muted);
+    }
+    .fav-empty i { font-size: 3.5rem; opacity: .25; margin-bottom: 16px; display: block; }
+    .fav-vid {
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      margin-bottom: 16px; border-radius: 20px; overflow: hidden;
+      background: #141418; border: 1px solid #2a2a2a; cursor: pointer; transition: .3s;
+    }
+    .fav-vid:hover { border-color: #a855f7; transform: translateY(-4px); box-shadow: 0 12px 40px rgba(168,85,247,.2); }
+
+    /* ── MODALS ── */
+    .modal-bg {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.88);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-box {
+      width: 100%; max-width: 960px; max-height: 92vh; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; position: relative;
+      animation: modalIn .3s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: none; } }
+    .modal-close {
+      position: absolute; top: 16px; left: 16px; z-index: 10;
+      width: 40px; height: 40px; border-radius: 12px; border: none;
+      background: rgba(0,0,0,.5); color: #fff; cursor: pointer; font-size: 1.1rem;
+      transition: .2s;
+    }
+    .modal-close:hover { background: rgba(244,63,94,.6); }
+    .modal-inner { padding: 28px; }
+
+    .stat-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 10px; font-size: .78rem;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
     }
 
-    .pin:hover .pin-overlay {
-      opacity: 1;
+    .seq-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 280px; overflow-y: auto; }
+    .seq-item {
+      border-radius: 10px; overflow: hidden; cursor: pointer; aspect-ratio: 16/9;
+      border: 2px solid transparent; transition: .25s;
+    }
+    .seq-item:hover { border-color: var(--accent); transform: scale(1.04); }
+    .seq-item img { width: 100%; height: 100%; object-fit: cover; }
+
+    #lightbox { z-index: 200; }
+    #lightbox img {
+      max-width: 94vw; max-height: 88vh; object-fit: contain;
+      border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.8);
     }
 
-    /* ===== Glass Nav ===== */
-    .glass {
-      background: rgba(15, 15, 15, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    .load-more-wrap { text-align: center; margin-top: 36px; }
+    .load-btn {
+      padding: 14px 36px; border-radius: 99px; font-weight: 800; font-size: .9rem;
+      background: #fff; color: #111; border: none; cursor: pointer; transition: .3s;
     }
+    .load-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,.12); }
 
-    /* ===== Tags Cloud ===== */
-    .tag-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 16px;
-      background: #161616;
-      border-radius: 20px;
-      border: 1px solid #2a2a2a;
-    }
+    .loading-box { grid-column: 1/-1; text-align: center; padding: 60px; color: var(--muted); }
 
-    .tag-item {
-      padding: 6px 16px;
-      border-radius: 30px;
-      background: #222;
-      border: 1px solid #333;
-      color: #aaa;
-      font-size: 13px;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .tag-item:hover,
-    .tag-item.active {
-      background: #a855f7;
-      color: white;
-      border-color: #a855f7;
-    }
-
-    /* ===== Modal ===== */
-    .modal-overlay {
-      background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(12px);
-    }
-
-    /* ===== Scroll ===== */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #1a1a1a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #a855f7;
-      border-radius: 12px;
-    }
-
-    /* ===== Buttons ===== */
-    .source-btn {
-      background: transparent;
-      color: #888;
-      border: 1px solid #333;
-      transition: 0.2s;
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 13px;
-    }
-
-    .source-btn.active {
-      background: #a855f7;
-      color: white;
-      border-color: #a855f7;
-    }
-
-    .source-btn:hover:not(.active) {
-      border-color: #666;
-      color: #ddd;
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-right: 0; padding: 20px 16px 100px; }
+      .mobile-nav { display: flex; gap: 4px; }
+      .seq-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
-
 <body>
+  <div class="ambient"></div>
+  <div class="grid-bg"></div>
 
-  <!-- ===== NAV ===== -->
-  <nav class="fixed top-0 w-full z-50 glass px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🌙</span>
-      <span class="text-2xl font-bold text-fuchsia-400">NYX</span>
-    </div>
-
-    <div class="flex-1 max-w-xl mx-4 order-last md:order-none w-full md:w-auto">
-      <div class="relative">
-        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-        <input id="search-input" type="text" placeholder="جستجو: milf, ahegao, maid, big breasts ..."
-        class="w-full bg-zinc-900 border border-zinc-700 rounded-full py-2.5 pr-5 pl-12 text-sm focus:outline-none focus:border-fuchsia-500 transition" />
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">🌙</div>
+        <div>
+          <h1>NYX</h1>
+          <p>آرشیو محتوا</p>
+        </div>
       </div>
-    </div>
 
-    <div class="flex gap-2">
-      <button onclick="switchSource('waifu')" class="source-btn active">Waifu</button>
-      <button onclick="switchSource('nekos')" class="source-btn">Nekos</button>
-      <button onclick="switchSource('eporner')" class="source-btn">Eporner</button>
-    </div>
+      <button class="nav-item active" data-sec="images" onclick="go('images',this)">
+        <i class="fa-regular fa-image"></i> تصاویر
+      </button>
+      <button class="nav-item" data-sec="videos" onclick="go('videos',this)">
+        <i class="fa-solid fa-clapperboard"></i> ویدیوها
+      </button>
+      <button class="nav-item" data-sec="favorites" onclick="go('favorites',this)">
+        <i class="fa-regular fa-heart"></i> علاقه‌مندی‌ها
+        <span class="badge" id="fav-badge" style="display:none">0</span>
+      </button>
+
+      <div class="nsfw-box">
+        <label>
+          <span id="nsfw-label">NSFW خاموش</span>
+          <div class="toggle">
+            <input type="checkbox" id="nsfw-toggle" onchange="toggleNsfw()" />
+            <div class="track"></div>
+          </div>
+        </label>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Images -->
+      <div id="sec-images" class="section active">
+        <div class="page-head">
+          <h2>گالری تصاویر</h2>
+          <p>مرور و ذخیره تصاویر از Waifu.im</p>
+        </div>
+        <div id="image-gallery" class="masonry"></div>
+        <div class="load-more-wrap">
+          <button class="load-btn" onclick="loadMoreImages()">بارگذاری بیشتر</button>
+        </div>
+      </div>
+
+      <!-- Videos -->
+      <div id="sec-videos" class="section">
+        <div class="page-head">
+          <h2>ویدیوها</h2>
+          <p>جستجو و مرور از Eporner</p>
+        </div>
+        <div class="video-toolbar">
+          <div class="search-field">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--muted)"></i>
+            <input id="video-search" type="text" placeholder="جستجو... (hentai, anime, ...)"
+                   onkeydown="if(event.key==='Enter')searchVideos()" />
+          </div>
+          <button class="btn btn-accent" onclick="searchVideos()">جستجو</button>
+          <button class="btn btn-ghost on" data-order="latest" onclick="filterVideos('latest',this)">جدیدترین</button>
+          <button class="btn btn-ghost" data-order="most-popular" onclick="filterVideos('most-popular',this)">محبوب</button>
+          <button class="btn btn-ghost" data-order="top-weekly" onclick="filterVideos('top-weekly',this)">ترند</button>
+        </div>
+        <div id="video-gallery" class="video-grid"></div>
+        <div class="load-more-wrap">
+          <button class="load-btn" onclick="loadMoreVideos()">ویدیوی بیشتر</button>
+        </div>
+      </div>
+
+      <!-- Favorites -->
+      <div id="sec-favorites" class="section">
+        <div class="page-head">
+          <h2>علاقه‌مندی‌ها</h2>
+          <p>پست‌های ذخیره‌شده شما</p>
+        </div>
+        <div class="fav-header">
+          <span><strong id="fav-count">0</strong> مورد ذخیره شده</span>
+          <button class="btn btn-ghost" onclick="clearFavs()" style="color:#f87171">
+            <i class="fa-regular fa-trash-can"></i> حذف همه
+          </button>
+        </div>
+        <div id="fav-gallery" class="masonry"></div>
+        <div id="fav-empty" class="fav-empty" style="display:none">
+          <i class="fa-regular fa-heart"></i>
+          <p style="font-size:1.1rem;font-weight:600;color:#a1a1aa">هنوز چیزی ذخیره نکرده‌اید</p>
+          <p style="font-size:.85rem;margin-top:8px">روی ❤️ در تصاویر یا ویدیوها بزنید</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile nav -->
+  <nav class="mobile-nav">
+    <button class="nav-item active" data-sec="images" onclick="go('images',this)">
+      <i class="fa-regular fa-image"></i> تصاویر
+    </button>
+    <button class="nav-item" data-sec="videos" onclick="go('videos',this)">
+      <i class="fa-solid fa-clapperboard"></i> ویدیو
+    </button>
+    <button class="nav-item" data-sec="favorites" onclick="go('favorites',this)">
+      <i class="fa-regular fa-heart"></i> ذخیره
+    </button>
   </nav>
 
-  <!-- ===== MAIN ===== -->
-  <div class="pt-24 max-w-screen-2xl mx-auto px-6">
-
-    <!-- ===== HERO ===== -->
-    <section class="bg-gradient-to-br from-fuchsia-950/40 to-black rounded-4xl p-10 text-center mb-10 border border-fuchsia-900/30">
-      <h1 class="text-5xl font-extrabold">آرشیو <span class="text-fuchsia-400">هنتای</span> و پورن</h1>
-      <p class="text-zinc-400 mt-3">APIهای قدرتمند • جستجوی زنده • عکس + ویدیو</p>
-    </section>
-
-    <!-- ===== TABS ===== -->
-    <div class="flex gap-6 border-b border-zinc-800 pb-3 mb-6 text-sm">
-      <button onclick="showSection('images')" class="tab-btn active flex items-center gap-2 text-white border-b-2 border-fuchsia-500 pb-3"><i class="fa-regular fa-image"></i> تصاویر</button>
-      <button onclick="showSection('videos')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-circle-play"></i> ویدیوها</button>
-      <button onclick="showSection('favorites')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-heart"></i> علاقه‌مندی‌ها</button>
-      <button onclick="showSection('tags')" class="tab-btn flex items-center gap-2 text-zinc-400 pb-3"><i class="fa-regular fa-tags"></i> تگ‌ها</button>
-    </div>
-
-    <!-- ===== IMAGES (Pinterest Masonry) ===== -->
-    <section id="images-section">
-      <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fa-regular fa-image text-fuchsia-400"></i> گالری</h2>
-        <button onclick="loadNewBatch()" class="bg-fuchsia-600 hover:bg-fuchsia-500 transition px-6 py-2.5 rounded-full text-sm"><i class="fa-regular fa-rotate-right ml-2"></i> جدید</button>
-      </div>
-      <div id="image-gallery" class="masonry"></div>
-      <div class="text-center mt-10">
-        <button onclick="loadMore()" class="px-8 py-3 bg-white text-black rounded-full font-bold text-sm hover:bg-zinc-200 transition"><i class="fa-regular fa-arrow-down ml-2"></i> بیشتر</button>
-      </div>
-    </section>
-
-    <!-- ===== VIDEOS ===== -->
-    <section id="videos-section" class="hidden">
-      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-circle-play text-fuchsia-400 ml-2"></i> ویدیوها</h2>
-      <div id="video-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    </section>
-
-    <!-- ===== FAVORITES ===== -->
-    <section id="favorites-section" class="hidden">
-      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-heart text-fuchsia-400 ml-2"></i> علاقه‌مندی‌ها</h2>
-      <div id="fav-gallery" class="masonry"></div>
-    </section>
-
-    <!-- ===== TAGS ===== -->
-    <section id="tags-section" class="hidden">
-      <h2 class="text-2xl font-bold mb-6"><i class="fa-regular fa-tags text-fuchsia-400 ml-2"></i> تگ‌های محبوب</h2>
-      <div class="tag-cloud" id="tag-cloud"></div>
-      <p class="text-zinc-500 text-sm mt-4">👆 روی هر تگ کلیک کنید تا محتوای مرتبط رو ببینید</p>
-    </section>
-
-  </div>
-
-  <!-- ===== MODAL ===== -->
-  <div id="modal" class="hidden fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
-    <div class="max-w-5xl w-full relative bg-zinc-900 rounded-3xl overflow-hidden">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-3xl text-white/70 hover:text-white z-10"><i class="fa-regular fa-circle-xmark"></i></button>
-      <div id="modal-content" class="p-6"></div>
+  <!-- Main modal -->
+  <div id="modal" class="modal-bg" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div id="modal-body" class="modal-inner"></div>
     </div>
   </div>
 
-  <script>
-    // ===== STATE =====
-    let currentSource = 'waifu';
-    let allItems = [];
-    let currentPage = 1;
-    let favorites = JSON.parse(localStorage.getItem('nyxFavs') || '[]');
-    let currentTag = '';
+  <!-- Lightbox -->
+  <div id="lightbox" class="modal-bg" onclick="if(event.target===this)closeLightbox()">
+    <button class="modal-close" style="position:fixed;top:20px;left:20px" onclick="closeLightbox()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()" />
+  </div>
 
-    // ===== ALL TAGS =====
-    const ALL_TAGS = [
-      'milf', 'ahegao', 'maid', 'big breasts', 'hentai', 'anime',
-      'waifu', 'neko', 'ecchi', 'suggestive', 'explicit', 'schoolgirl',
-      'nurse', 'bunny girl', 'cat girl', 'fox girl', 'demon girl',
-      'angel', 'succubus', 'vampire', 'elf', 'orc', 'tentacle',
-      'bondage', 'bdsm', 'yuri', 'yaoi', 'furry', 'scat', 'gore'
-    ];
+<script>
+/* ═══════════════════════════════════════════
+   STORAGE — همان کلید و فرمت اصلی شما
+   nyxFavs = ["https://...", "videoId123", ...]
+   nyxFavMeta = { "videoId": { title, thumb, ... } }  (فقط متادیتای ویدیو)
+   ═══════════════════════════════════════════ */
+const FAV_KEY  = "nyxFavs";      // ← همان کلید قبلی
+const META_KEY = "nyxFavMeta";   // متادیتای ویدیو (جدید، داده قدیمی رو خراب نمی‌کنه)
 
-    // ===== API FUNCTIONS =====
-    async function fetchWaifu(tags = '') {
-      let url = `https://api.waifu.im/images?IsNsfw=true&PageSize=20`;
-      if (tags) url += `&IncludedTags=${encodeURIComponent(tags)}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data.items || [];
-      } catch { return []; }
-    }
+let favorites = [];   // string[]
+let favMeta   = {};   // { [videoId]: videoObj }
+let videoCache = {};
 
-    async function fetchNekos() {
-      try {
-        const res = await fetch(`https://api.nekosapi.com/v4/images/random?rating=explicit,suggestive&limit=20`);
-        const data = await res.json();
-        return data.filter(i => ['explicit', 'suggestive'].includes(i.rating));
-      } catch { return []; }
-    }
+let imgPage = 1, vidPage = 1, vidOrder = "latest", vidQuery = "";
+let nsfwOnly = false;
+const PLACEHOLDER = "https://picsum.photos/400/300?blur=2";
 
-    async function fetchEporner(query = '') {
-      const q = query || 'hentai';
-      const url = `https://www.eporner.com/api/v2/video/search/?q=${encodeURIComponent(q)}&per_page=12`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data.videos || [];
-      } catch { return []; }
-    }
+/* ── Storage helpers ── */
+function isUrl(s) { return /^https?:\/\//i.test(s); }
 
-    // ===== RENDER PINTEREST PIN =====
-    function createPin(item) {
-      const pin = document.createElement('div');
-      pin.className = 'pin';
+function loadStorage() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+    favorites = [];
+    favMeta   = JSON.parse(localStorage.getItem(META_KEY) || "{}");
 
-      const url = item.url || item.image_url || item.preview;
-      const tags = item.tags ? item.tags.map(t => t.name || t).join(' • ') : 'NSFW';
-      const width = item.width || 400;
-      const height = item.height || 400;
-
-      pin.innerHTML = `
-          <img src="${url}" loading="lazy" style="aspect-ratio: ${width}/${height}" />
-          <div class="pin-overlay">
-            <div class="flex justify-between items-end">
-              <div class="text-xs text-zinc-300">
-                <span class="bg-black/50 px-2 py-1 rounded-full">${tags}</span>
-                <span class="block mt-1 text-zinc-400 text-[10px]">${width}×${height}</span>
-              </div>
-              <button onclick="event.stopPropagation(); toggleFavorite('${url}')" class="bg-white/20 hover:bg-white/30 backdrop-blur p-2 rounded-full text-lg">
-                <i class="fa-regular fa-heart ${favorites.includes(url) ? 'fa-solid text-fuchsia-400' : ''}"></i>
-              </button>
-            </div>
-          </div>
-        `;
-
-      pin.onclick = () => showModal(item);
-      return pin;
-    }
-
-    // ===== RENDER VIDEO CARD =====
-    function createVideoCard(video) {
-      const card = document.createElement('div');
-      card.className = 'pin';
-      const thumb = video.preview || video.thumb || 'https://picsum.photos/400/300';
-      card.innerHTML = `
-          <img src="${thumb}" loading="lazy" class="aspect-video" />
-          <div class="p-4">
-            <p class="font-medium text-sm line-clamp-2">${video.title || 'ویدیو بدون عنوان'}</p>
-            <div class="flex justify-between mt-2 text-xs text-zinc-500">
-              <span>⏱ ${video.duration || '??'}</span>
-              <span>👁 ${video.views || '0'}</span>
-            </div>
-          </div>
-        `;
-      card.onclick = () => showVideoModal(video);
-      return card;
-    }
-
-    // ===== LOAD CONTENT =====
-    async function loadContent(append = false) {
-      const container = document.getElementById('image-gallery');
-      if (!append) container.innerHTML = '';
-
-      const query = document.getElementById('search-input').value.trim();
-      const searchTerm = currentTag || query;
-
-      let items = [];
-
-      if (currentSource === 'eporner') {
-        const videos = await fetchEporner(searchTerm);
-        videos.forEach(v => container.appendChild(createVideoCard(v)));
+    raw.forEach(item => {
+      // فرمت قدیمی: رشته ساده
+      if (typeof item === "string") {
+        favorites.push(item);
         return;
-      } else if (currentSource === 'waifu') {
-        items = await fetchWaifu(searchTerm);
-      } else if (currentSource === 'nekos') {
-        items = await fetchNekos();
       }
-
-      // fallback
-      if (items.length === 0 && searchTerm.length > 1) {
-        if (currentSource === 'waifu') items = await fetchWaifu('');
-        else if (currentSource === 'nekos') items = await fetchNekos();
-      }
-
-      allItems = append ? [...allItems, ...items] : items;
-      items.forEach(item => container.appendChild(createPin(item)));
-    }
-
-    // ===== LOAD MORE =====
-    function loadMore() {
-      currentPage++;
-      loadContent(true);
-    }
-
-    function loadNewBatch() {
-      currentPage = 1;
-      currentTag = '';
-      document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-      document.getElementById('search-input').value = '';
-      loadContent(false);
-    }
-
-    // ===== MODAL WITH DETAILS =====
-    function showModal(item) {
-      const url = item.url || item.image_url;
-      const tags = item.tags ? item.tags.map(t => t.name || t).join(' • ') : 'بدون تگ';
-      const width = item.width || 'نامشخص';
-      const height = item.height || 'نامشخص';
-      const source = item.source || currentSource;
-
-      document.getElementById('modal-content').innerHTML = `
-          <div class="flex flex-col md:flex-row gap-6">
-            <div class="flex-1">
-              <img src="${url}" class="w-full max-h-[70vh] object-contain rounded-2xl" />
-            </div>
-            <div class="md:w-80 space-y-4">
-              <h3 class="text-xl font-bold">جزئیات</h3>
-              <div class="space-y-2 text-sm">
-                <p><span class="text-zinc-400">ابعاد:</span> ${width} × ${height}</p>
-                <p><span class="text-zinc-400">منبع:</span> ${source}</p>
-                <p><span class="text-zinc-400">تگ‌ها:</span></p>
-                <div class="flex flex-wrap gap-1">
-                  ${tags.split(' • ').map(t => `<span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">${t}</span>`).join('')}
-                </div>
-                <button onclick="toggleFavorite('${url}')" class="w-full mt-4 bg-fuchsia-600 hover:bg-fuchsia-500 py-3 rounded-full text-sm">
-                  <i class="fa-regular fa-heart ${favorites.includes(url) ? 'fa-solid' : ''} ml-2"></i>
-                  ${favorites.includes(url) ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      document.getElementById('modal').classList.remove('hidden');
-    }
-
-    // ===== VIDEO MODAL =====
-    function showVideoModal(video) {
-      const src = video.url || video.link || '#';
-      document.getElementById('modal-content').innerHTML = `
-          <div class="space-y-4">
-            <h3 class="text-xl font-bold">${video.title || 'ویدیو'}</h3>
-            <video controls autoplay class="w-full max-h-[75vh] rounded-2xl">
-              <source src="${src}" type="video/mp4" />
-            </video>
-            <div class="flex gap-4 text-sm text-zinc-400">
-              <span>⏱ ${video.duration || '??'}</span>
-              <span>👁 ${video.views || '0'}</span>
-              <span>👍 ${video.likes || '0'}</span>
-            </div>
-          </div>
-        `;
-      document.getElementById('modal').classList.remove('hidden');
-    }
-
-    // ===== FAVORITES =====
-    function toggleFavorite(url) {
-      const idx = favorites.indexOf(url);
-      if (idx > -1) favorites.splice(idx, 1);
-      else favorites.push(url);
-      localStorage.setItem('nyxFavs', JSON.stringify(favorites));
-      loadFavorites();
-    }
-
-    function loadFavorites() {
-      const container = document.getElementById('fav-gallery');
-      container.innerHTML = '';
-      favorites.forEach(url => {
-        const div = document.createElement('div');
-        div.className = 'pin';
-        div.innerHTML = `<img src="${url}" class="w-full" />`;
-        div.onclick = () => {
-          document.getElementById('modal-content').innerHTML =
-            `<img src="${url}" class="max-h-[80vh] mx-auto rounded-2xl" />`;
-          document.getElementById('modal').classList.remove('hidden');
-        };
-        container.appendChild(div);
-      });
-    }
-
-    // ===== TAGS =====
-    function loadTags() {
-      const container = document.getElementById('tag-cloud');
-      container.innerHTML = '';
-      ALL_TAGS.forEach(tag => {
-        const span = document.createElement('span');
-        span.className = 'tag-item';
-        span.textContent = tag;
-        span.onclick = () => {
-          document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-          span.classList.add('active');
-          currentTag = tag;
-          document.getElementById('search-input').value = tag;
-          loadContent(false);
-          showSection('images');
-        };
-        container.appendChild(span);
-      });
-    }
-
-    // ===== SWITCH SOURCE =====
-    function switchSource(src) {
-      currentSource = src;
-      document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      currentTag = '';
-      document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-      loadContent(false);
-    }
-
-    // ===== SHOW SECTION =====
-    function showSection(sec) {
-      document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(sec + '-section').classList.remove('hidden');
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('active', 'text-white', 'border-b-2', 'border-fuchsia-500');
-        b.classList.add('text-zinc-400');
-      });
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        if (b.textContent.includes(sec === 'images' ? 'تصاویر' : sec === 'videos' ? 'ویدیوها' : sec === 'favorites' ?
-            'علاقه' : 'تگ')) {
-          b.classList.add('active', 'text-white', 'border-b-2', 'border-fuchsia-500');
-          b.classList.remove('text-zinc-400');
+      // فرمت object که قبلاً من ساختم — مهاجرت به فرمت اصلی
+      if (item && typeof item === "object") {
+        if (item.type === "image" && item.url) {
+          favorites.push(item.url);
+        } else if (item.type === "video" && item.id) {
+          favorites.push(String(item.id));
+          favMeta[item.id] = { ...item, id: item.id };
         }
-      });
-      if (sec === 'images') loadContent(false);
-      else if (sec === 'favorites') loadFavorites();
-      else if (sec === 'tags') loadTags();
-    }
-
-    // ===== SEARCH =====
-    let searchTimeout;
-    document.getElementById('search-input').addEventListener('input', function() {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        currentTag = '';
-        document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-        currentPage = 1;
-        loadContent(false);
-      }, 400);
+      }
     });
 
-    // ===== CLOSE MODAL =====
-    function closeModal() {
-      document.getElementById('modal').classList.add('hidden');
+    // حذف تکراری
+    favorites = [...new Set(favorites)];
+    persist();
+  } catch {
+    favorites = [];
+    favMeta = {};
+  }
+}
+
+function persist() {
+  localStorage.setItem(FAV_KEY, JSON.stringify(favorites));
+  localStorage.setItem(META_KEY, JSON.stringify(favMeta));
+  updateFavUI();
+}
+
+function isFav(id) { return favorites.includes(id); }
+
+function toggleFav(id, videoObj) {
+  if (isFav(id)) {
+    favorites = favorites.filter(x => x !== id);
+    delete favMeta[id];
+  } else {
+    favorites.push(id);
+    if (videoObj) {
+      favMeta[id] = videoObj;
+      videoCache[id] = videoObj;
     }
+  }
+  persist();
+  if (document.getElementById("sec-favorites").classList.contains("active")) renderFavs();
+}
 
-    // ===== INIT =====
-    window.onload = () => {
-      loadContent(false);
-      loadFavorites();
-      loadTags();
-    };
-  </script>
+function updateFavUI() {
+  const n = favorites.length;
+  document.getElementById("fav-count").textContent = n;
+  const b = document.getElementById("fav-badge");
+  b.textContent = n;
+  b.style.display = n > 0 ? "" : "none";
+}
 
+/* ── Navigation ── */
+function go(sec, btn) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById("sec-" + sec).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.querySelectorAll(`[data-sec="${sec}"]`).forEach(n => n.classList.add("active"));
+
+  if (sec === "favorites") renderFavs();
+  if (sec === "videos" && !document.getElementById("video-gallery").children.length) loadVideos();
+}
+
+function toggleNsfw() {
+  nsfwOnly = document.getElementById("nsfw-toggle").checked;
+  document.getElementById("nsfw-label").textContent = nsfwOnly ? "NSFW روشن" : "NSFW خاموش";
+  if (nsfwOnly) {
+    go("videos");
+    vidPage = 1;
+    loadVideos();
+  } else {
+    go("images");
+    imgPage = 1;
+    document.getElementById("image-gallery").innerHTML = "";
+    fetchImages(1).then(items => items.forEach(i => document.getElementById("image-gallery").appendChild(makePin(i))));
+  }
+}
+
+/* ═══ IMAGES ═══ */
+async function fetchImages(page) {
+  try {
+    const r = await fetch(`https://api.waifu.im/images?IsNsfw=${nsfwOnly}&PageSize=12&Page=${page}`);
+    const d = await r.json();
+    return d.items || [];
+  } catch { return []; }
+}
+
+function makePin(item) {
+  const url = item.url || item.file_url || PLACEHOLDER;
+  const pin = document.createElement("div");
+  pin.className = "pin";
+  const saved = isFav(url);
+  pin.innerHTML = `
+    <img src="${url}" loading="lazy" class="w-full" />
+    <div class="pin-overlay">
+      <button onclick="event.stopPropagation();toggleFav('${esc(url)}')" class="bg-white/20 hover:bg-white/30 p-2 rounded-full">
+        <i class="fa-heart ${saved?'fa-solid text-pink-400':'fa-regular'}"></i>
+      </button>
+    </div>`;
+  pin.onclick = () => openImageModal(url);
+  return pin;
+}
+
+function openImageModal(url) {
+  const saved = isFav(url);
+  document.getElementById("modal-body").innerHTML = `
+    <img src="${url}" style="width:100%;max-height:75vh;object-fit:contain;border-radius:16px" />
+    <div style="display:flex;gap:12px;margin-top:20px">
+      <button class="btn btn-accent" style="flex:1;padding:16px" onclick="downloadFile('${esc(url)}')">دانلود</button>
+      <button class="btn btn-ghost" style="flex:1;padding:16px" onclick="toggleFav('${esc(url)}');openImageModal('${esc(url)}')">
+        <i class="fa-heart ${saved?'fa-solid text-pink-400':'fa-regular'}"></i>
+        ${saved ? "حذف از ذخیره" : "ذخیره"}
+      </button>
+    </div>`;
+  openModal();
+}
+
+function loadMoreImages() {
+  imgPage++;
+  fetchImages(imgPage).then(items => items.forEach(i => document.getElementById("image-gallery").appendChild(makePin(i))));
+}
+
+/* ═══ VIDEOS ═══ */
+async function fetchVideos(page, order, query) {
+  try {
+    const q = encodeURIComponent(query || "all");
+    const r = await fetch(`https://www.eporner.com/api/v2/video/search/?query=${q}&per_page=12&page=${page}&order=${order}&thumbsize=medium`);
+    if (!r.ok) throw 0;
+    const d = await r.json();
+    (d.videos || []).forEach(v => { videoCache[v.id] = v; });
+    return d.videos || [];
+  } catch { return []; }
+}
+
+async function fetchVideoById(id) {
+  if (videoCache[id]) return videoCache[id];
+  if (favMeta[id]) { videoCache[id] = favMeta[id]; return favMeta[id]; }
+  try {
+    const r = await fetch(`https://www.eporner.com/api/v2/video/id/?id=${id}&thumbsize=medium`);
+    if (!r.ok) throw 0;
+    const d = await r.json();
+    if (d) { videoCache[id] = d; favMeta[id] = d; persist(); }
+    return d;
+  } catch { return null; }
+}
+
+function fmtViews(v) {
+  const n = parseInt(v, 10);
+  if (isNaN(n)) return v;
+  if (n >= 1e6) return (n/1e6).toFixed(1)+"M";
+  if (n >= 1e3) return (n/1e3).toFixed(1)+"K";
+  return String(n);
+}
+
+function makeVideoCard(v) {
+  const thumb = v.default_thumb?.src || PLACEHOLDER;
+  const saved = isFav(v.id);
+  const el = document.createElement("div");
+  el.className = "v-card";
+  el.innerHTML = `
+    <div class="v-thumb">
+      <img src="${thumb}" loading="lazy" alt="" />
+      <div class="overlay"><div class="play"><i class="fa-solid fa-play" style="margin-right:-2px"></i></div></div>
+      <span class="dur">${v.length_min||""}</span>
+    </div>
+    <div class="v-body">
+      <h3>${v.title}</h3>
+      <div class="v-meta">
+        <span><i class="fa-regular fa-eye"></i> ${fmtViews(v.views)}</span>
+        <span><i class="fa-solid fa-star" style="color:#fbbf24"></i> ${v.rate||"-"}</span>
+      </div>
+      <button onclick="event.stopPropagation();toggleFav('${v.id}',videoCache['${v.id}'])" style="margin-top:10px;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer">
+        <i class="fa-heart ${saved?'fa-solid text-pink-400':'fa-regular'}"></i> ${saved?"ذخیره شده":"ذخیره"}
+      </button>
+    </div>`;
+  el.onclick = () => openVideoModal(v);
+  return el;
+}
+
+async function loadVideos(append) {
+  const box = document.getElementById("video-gallery");
+  if (!append) {
+    vidPage = 1;
+    box.innerHTML = '<div class="loading-box"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem"></i><p style="margin-top:12px">در حال بارگذاری...</p></div>';
+  }
+  const list = await fetchVideos(vidPage, vidOrder, vidQuery);
+  if (!append) box.innerHTML = "";
+  if (!list.length && !append) {
+    box.innerHTML = '<div class="loading-box">نتیجه‌ای یافت نشد</div>';
+    return;
+  }
+  list.forEach(v => box.appendChild(makeVideoCard(v)));
+}
+
+function filterVideos(order, btn) {
+  vidOrder = order;
+  document.querySelectorAll("[data-order]").forEach(b => b.classList.remove("on"));
+  btn.classList.add("on");
+  loadVideos();
+}
+
+function searchVideos() {
+  vidQuery = document.getElementById("video-search").value.trim() || "all";
+  loadVideos();
+}
+
+function loadMoreVideos() { vidPage++; loadVideos(true); }
+
+function openVideoModal(v) {
+  const saved = isFav(v.id);
+  const seqs = (v.thumbs||[]).map((t,i) =>
+    `<div class="seq-item" onclick="openLightbox('${esc(t.src)}')"><img src="${t.src}" alt="سکانس ${i+1}" loading="lazy" /></div>`
+  ).join("");
+
+  document.getElementById("modal-body").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr;gap:24px" class="lg:grid-cols-2">
+      <div>
+        <img src="${v.default_thumb?.src||''}" style="width:100%;border-radius:16px;aspect-ratio:16/9;object-fit:cover" />
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <a href="${v.url}" target="_blank" class="btn btn-accent" style="flex:1;text-align:center;text-decoration:none;padding:14px">
+            <i class="fa-solid fa-play"></i> مشاهده در Eporner
+          </a>
+          <button class="btn btn-ghost" style="flex:1;padding:14px" onclick="toggleFav('${v.id}',videoCache['${v.id}']);openVideoModal(videoCache['${v.id}'])">
+            <i class="fa-heart ${saved?'fa-solid text-pink-400':'fa-regular'}"></i> ${saved?"حذف":"ذخیره"}
+          </button>
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 12px;line-height:1.6">${v.title}</h2>
+        <div class="stat-row">
+          <span class="chip"><i class="fa-regular fa-clock" style="color:#a78bfa"></i> ${v.length_min||"-"}</span>
+          <span class="chip"><i class="fa-regular fa-eye" style="color:#a78bfa"></i> ${fmtViews(v.views)}</span>
+          <span class="chip"><i class="fa-solid fa-star" style="color:#fbbf24"></i> ${v.rate||"-"}</span>
+        </div>
+        ${v.keywords ? `<p style="color:var(--muted);font-size:.85rem;line-height:1.7;margin-bottom:20px">${v.keywords}</p>` : ""}
+        <h3 style="font-weight:700;margin-bottom:12px"><i class="fa-solid fa-images" style="color:#a78bfa"></i> سکانس‌ها <span style="font-size:.75rem;color:var(--muted);font-weight:400">— کلیک برای بزرگ‌نمایی</span></h3>
+        <div class="seq-grid">${seqs || '<p style="color:var(--muted);font-size:.85rem">سکانسی نیست</p>'}</div>
+      </div>
+    </div>`;
+  openModal();
+}
+
+/* ═══ FAVORITES ═══ */
+async function renderFavs() {
+  const box = document.getElementById("fav-gallery");
+  const empty = document.getElementById("fav-empty");
+  box.innerHTML = "";
+
+  if (!favorites.length) {
+    box.style.display = "none";
+    empty.style.display = "";
+    return;
+  }
+  box.style.display = "";
+  empty.style.display = "none";
+
+  for (const id of favorites) {
+    if (isUrl(id)) {
+      const pin = document.createElement("div");
+      pin.className = "pin";
+      pin.innerHTML = `
+        <img src="${id}" loading="lazy" class="w-full" />
+        <div class="pin-overlay">
+          <button onclick="event.stopPropagation();toggleFav('${esc(id)}')" class="bg-red-500/70 hover:bg-red-500 p-2 rounded-full">
+            <i class="fa-solid fa-trash" style="font-size:.8rem"></i>
+          </button>
+        </div>`;
+      pin.onclick = () => openImageModal(id);
+      box.appendChild(pin);
+    } else {
+      let v = favMeta[id] || videoCache[id];
+      if (!v || !v.title) v = await fetchVideoById(id);
+
+      const card = document.createElement("div");
+      card.className = "fav-vid";
+      if (v) {
+        card.innerHTML = `
+          <div style="position:relative">
+            <img src="${v.default_thumb?.src || v.thumb || PLACEHOLDER}" style="width:100%;aspect-ratio:16/9;object-fit:cover" loading="lazy" />
+            <span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);padding:2px 8px;border-radius:6px;font-size:.7rem">${v.length_min||""}</span>
+            <button onclick="event.stopPropagation();toggleFav('${id}')" style="position:absolute;top:8px;left:8px;background:rgba(239,68,68,.8);border:none;width:32px;height:32px;border-radius:50%;color:#fff;cursor:pointer">
+              <i class="fa-solid fa-trash" style="font-size:.7rem"></i>
+            </button>
+          </div>
+          <div style="padding:14px">
+            <p style="margin:0;font-size:.85rem;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.title}</p>
+          </div>`;
+        card.onclick = () => openVideoModal(v);
+      } else {
+        card.innerHTML = `
+          <div style="padding:30px;text-align:center;color:var(--muted)">
+            <i class="fa-solid fa-clapperboard" style="font-size:2rem;opacity:.3"></i>
+            <p style="margin:10px 0 0;font-size:.85rem">ویدیو #${id}</p>
+            <button class="btn btn-ghost" style="margin-top:10px" onclick="event.stopPropagation();toggleFav('${id}')">حذف</button>
+          </div>`;
+      }
+      box.appendChild(card);
+    }
+  }
+}
+
+function clearFavs() {
+  if (!favorites.length) return;
+  if (!confirm("همه علاقه‌مندی‌ها حذف شوند؟")) return;
+  favorites = [];
+  favMeta = {};
+  persist();
+  renderFavs();
+}
+
+/* ═══ MODALS ═══ */
+function openModal() {
+  document.getElementById("modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeModal() {
+  document.getElementById("modal").classList.remove("open");
+  if (!document.getElementById("lightbox").classList.contains("open")) document.body.style.overflow = "";
+}
+function openLightbox(src) {
+  document.getElementById("lightbox-img").src = src;
+  document.getElementById("lightbox").classList.add("open");
+}
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.getElementById("lightbox-img").src = "";
+}
+
+function downloadFile(url) {
+  const a = document.createElement("a");
+  a.href = url; a.download = "nyx-" + Date.now() + ".jpg"; a.click();
+}
+
+function esc(s) { return s.replace(/'/g, "\\'").replace(/"/g, "&quot;"); }
+
+/* ═══ INIT ═══ */
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (document.getElementById("lightbox").classList.contains("open")) closeLightbox();
+    else if (document.getElementById("modal").classList.contains("open")) closeModal();
+  }
+});
+
+loadStorage();
+updateFavUI();
+fetchImages(1).then(items => items.forEach(i => document.getElementById("image-gallery").appendChild(makePin(i))));
+</script>
 </body>
 </html>
